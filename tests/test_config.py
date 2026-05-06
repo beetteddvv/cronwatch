@@ -100,3 +100,20 @@ def test_load_config_invalid_yaml():
             load_config(path)
     finally:
         os.unlink(path)
+
+
+def test_load_config_empty_jobs():
+    """Config with no jobs list should load successfully with an empty jobs list."""
+    minimal_config = {
+        "log_file": "/tmp/cronwatch.log",
+        "alerts": {"email": "ops@example.com"},
+        "jobs": [],
+    }
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+        yaml.dump(minimal_config, f)
+        path = f.name
+    try:
+        cfg = load_config(path)
+        assert cfg.jobs == []
+    finally:
+        os.unlink(path)
