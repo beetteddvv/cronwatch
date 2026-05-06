@@ -54,3 +54,13 @@ class StateStore:
 
     def get_last_error(self, job_name: str) -> Optional[str]:
         return self._data.get(job_name, {}).get("last_error")
+
+    def reset(self, job_name: str) -> None:
+        """Clear all stored state for a job, as if it has never been seen."""
+        if job_name in self._data:
+            del self._data[job_name]
+            self._save()
+
+    def all_jobs(self) -> list[str]:
+        """Return a list of all job names that have recorded state."""
+        return list(self._data.keys())
