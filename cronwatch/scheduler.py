@@ -40,6 +40,18 @@ class ScheduleChecker:
         missed = self.get_expected_runs(since=last_run, until=now)
         return len(missed) > 0
 
+    def missed_run_count(self, last_run: Optional[datetime], now: Optional[datetime] = None) -> int:
+        """Return the number of expected runs missed since last_run.
+
+        If last_run is None, counts missed runs over the past day.
+        """
+        now = now or datetime.utcnow()
+        if last_run is None:
+            since = now - timedelta(days=1)
+        else:
+            since = last_run
+        return len(self.get_expected_runs(since=since, until=now))
+
     def next_run(self, after: Optional[datetime] = None) -> datetime:
         """Return the next scheduled run time."""
         after = after or datetime.utcnow()
