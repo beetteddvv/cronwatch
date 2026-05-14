@@ -60,3 +60,15 @@ def test_dispatch_unknown_method_returns_false(sample_event):
     dispatcher = Dispatcher(cfg)
     result = dispatcher.dispatch(sample_event)
     assert result is False
+
+
+def test_dispatch_email_all_recipients_fail_returns_false(email_alert_config, sample_event):
+    """Dispatcher should return False when all email deliveries fail."""
+    dispatcher = Dispatcher(email_alert_config)
+    with patch.object(
+        dispatcher._email,
+        "send_batch",
+        return_value={"ops@example.com": False},
+    ):
+        result = dispatcher.dispatch(sample_event)
+    assert result is False
